@@ -3,12 +3,51 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 10vh;
+  background-color: rgba(250, 0, 40, .2);
+  color: rgb(88,88,88);
+}
+
+.header-nav-bar {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+}
+
+.header-nav-bar li {
+  flex-grow: 1;
+}
+
+.header-nav-bar a {
+  color: rgb(88,88,88);
+  text-decoration: none;
+}
+
+#calculator-display {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-top: 15vh;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+  min-width: 300px;
+  max-width: 400px;
+  height: 70%;
+  min-height: 400px;
+  border: solid darkgrey 2px;
+  background: linear-gradient(#686868, #989898);
+  border-radius: 10px;
+  box-shadow: 3px 4px lightgrey;
+
+}
+
+#display{
+  flex-grow:1;
+}
+
+#calculator-buttons {
+  flex-grow: 4;
 }
