@@ -10,6 +10,8 @@ class Calculator extends React.Component {
     super(props);
     this.state = {
       input: '',
+      output: '0',
+      lastCharacter: '',
     }
     this.handleInputClick = this.handleInputClick.bind(this);
     this.handleOperatorClick = this.handleOperatorClick.bind(this);
@@ -17,6 +19,7 @@ class Calculator extends React.Component {
     this.handleEqualClick = this.handleEqualClick.bind(this);
     this.handleDecimalClick = this.handleDecimalClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.prevEqualClick = this.prevEqualClick.bind(this);
   }
 
   componentDidMount(){
@@ -29,6 +32,16 @@ class Calculator extends React.Component {
 
   handleKeyDown(event) {
     let key = event.key;
+    if (key === "Enter") {
+      this.handleEqualClick(event);
+      return;
+    }
+    if (key === ".") {
+      this.handleDecimalClick(event, key);
+    }
+    if (key === "C" || key === "c") {
+      this.handleClearClick(event);
+    }
     let regExp = /[0-9]/;
     if (regExp.test(key)) {
       this.handleInputClick(event, key);
@@ -37,30 +50,36 @@ class Calculator extends React.Component {
     if (regExp.test(key)) {
       this.handleOperatorClick(event, key);
     }
-    if (key === ".") {
-      this.handleDecimalClick(event, key);
-    }
   }
 
   handleClearClick(event) {
-    this.setState( {input: '',});
+    this.setState( {
+      input: '',
+      output: '0',
+      lastCharacter: '',
+    });
   }
 
   handleInputClick(event, value) {
     let currentInput = this.state.input;
     let nextValue = currentInput+=value;
     this.setState(
-      {input: nextValue}
+      {input: nextValue,
+       lastCharacter: value,
+     }
     );
   }
 
   handleOperatorClick(event, value) {
+    if (this.state.lastCharacter === "=") {
+      this.prevEqualClick(value);
+      return;
+    }
     let currentInput = this.state.input;
     if ( currentInput.length === 0 ) {
       return;
     }
-    let lastIndex = currentInput.length -1;
-    let lastInput = currentInput.charAt(lastIndex);
+    let lastInput = currentInput.charAt(currentInput.length-1);
     let regEx = /[-+*/]/;
     if (regEx.test(lastInput)) {
       return;
@@ -70,6 +89,16 @@ class Calculator extends React.Component {
       {input: nextValue}
     );
   }
+
+    prevEqualClick(value) {
+      console.log("entered prev equal click");
+      let currentTotal = this.state.output;
+      this.setState({
+        input: currentTotal + value,
+        lastCharacter: value,
+      })
+    }
+
 
   handleDecimalClick(event, value) {
     let currentInput = this.state.input;
@@ -84,6 +113,9 @@ class Calculator extends React.Component {
   }
 
   handleEqualClick(event) {
+    if (this.state.lastCharacter === "=" ) {
+          return;
+    }
     let currentInput = this.state.input;
     if (currentInput.length === 1) {
       return;
@@ -95,8 +127,10 @@ class Calculator extends React.Component {
     }
     let nextValue = evaluate(currentInput);
     this.setState(
-      { input: nextValue,}
-    )
+      { input: (currentInput + " = " + nextValue),
+        output: nextValue,
+        lastCharacter: '=',
+      });
   }
 
   render() {
@@ -104,7 +138,8 @@ class Calculator extends React.Component {
       <div id="calculator-display">
 
         <div id="display">
-          <div>{this.state.input}</div>
+          {this.state.input}
+          <p>{this.state.output}</p>
         </div>
 
         <button className="function-button" id="clear"
