@@ -6,7 +6,7 @@
   position: fixed;
   top: 0;
   width: 100vw;
-  height: 10vh;
+  height: auto;
   background-color: rgba(250, 0, 40, .2);
   color: rgb(88,88,88);
 }
@@ -19,6 +19,7 @@
 
 .header-nav-bar li {
   flex-grow: 1;
+  padding: 5px;
 }
 
 .header-nav-bar a {
@@ -27,9 +28,16 @@
 }
 
 #calculator-display {
-  display: flex;
-  flex-direction: column;
-  margin-top: 15vh;
+  margin-top: 20%;
+  display: grid;
+  grid-template-areas:
+    'display display display display'
+    'clear clear divide multiply'
+    'seven eight nine subract'
+    'four five six add'
+    'one two three equals'
+    'zero zero decimal equals';
+  grid-gap: 5px;
   margin-left: auto;
   margin-right: auto;
   width: 40%;
@@ -41,13 +49,60 @@
   background: linear-gradient(#686868, #989898);
   border-radius: 10px;
   box-shadow: 3px 4px lightgrey;
-
+  padding: 4px;
 }
+
 
 #display{
-  flex-grow:1;
+  grid-area: display;
+  margin: 2px;
+  background-color: grey;
+  border-radius: 10px;
+  text-align: right;
+  padding: 5px;
 }
 
-#calculator-buttons {
-  flex-grow: 4;
+#zero {grid-area: zero;}
+#one {grid-area: one;}
+#two {grid-area: two;}
+#three {grid-area: three};
+#four {grid-area: four};
+#five {grid-area: five};
+#six {grid-area: six};
+#seven {grid-area: seven};
+#eight {grid-area: eight};
+#nine {grid-area: nine};
+#add {grid-area:add};
+#subtract {grid-area: subtract;}
+#multiply {grid-area: multiply;}
+#divide {grid-area: divide;}
+#equals {grid-area: equals;
+         background-color: red;}
+#decimal {grid-area: decimal;}
+#clear {grid-area: clear;
+        background-color: red;}
+
+.number-button, .function-button {
+  margin: 2px;
+  background-color: silver;
+  border-radius: 10px;
+  text-align: center;
+}
+
+
+@media only screen and (max-width: 500px) {
+  .App-header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: auto;
+    background-color: rgba(250, 0, 40, .2);
+    color: rgb(88,88,88);
+  }
+
+  .header-nav-bar {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+  }
 }
