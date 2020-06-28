@@ -91,7 +91,6 @@ class Calculator extends React.Component {
   }
 
     prevEqualClick(value) {
-      console.log("entered prev equal click");
       let currentTotal = this.state.output;
       this.setState({
         input: currentTotal + value,
