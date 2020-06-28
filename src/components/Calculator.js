@@ -94,7 +94,6 @@ class Calculator extends React.Component {
       return;
     }
     let nextValue = evaluate(currentInput);
-    console.log(nextValue);
     this.setState(
       { input: nextValue,}
     )

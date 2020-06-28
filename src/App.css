@@ -6,9 +6,15 @@
   position: fixed;
   top: 0;
   width: 100vw;
-  height: auto;
+  height: 60px;
   background-color: rgba(250, 0, 40, .2);
   color: rgb(88,88,88);
+}
+
+.spacer {
+  width: 100vw;
+  top: 0;
+  height: 60px;
 }
 
 .header-nav-bar {
@@ -28,7 +34,7 @@
 }
 
 #calculator-display {
-  margin-top: 20%;
+  margin-top: 20px;
   display: grid;
   grid-template-areas:
     'display display display display'
@@ -40,18 +46,16 @@
   grid-gap: 5px;
   margin-left: auto;
   margin-right: auto;
-  width: 40%;
-  min-width: 300px;
-  max-width: 400px;
-  height: 70%;
-  min-height: 400px;
-  border: solid darkgrey 2px;
+  width: 300px;
+  max-width: 300px;
+  height: 400px;
+  max-height: 400px;
+  border: solid black 2px;
   background: linear-gradient(#686868, #989898);
   border-radius: 10px;
-  box-shadow: 3px 4px lightgrey;
+  box-shadow: 2px 2px #696969;
   padding: 4px;
 }
-
 
 #display{
   grid-area: display;
@@ -60,9 +64,11 @@
   border-radius: 10px;
   text-align: right;
   padding: 5px;
+  height: 60px;
 }
 
-#zero {grid-area: zero;}
+#zero {grid-area: zero;
+       width: 150px;}
 #one {grid-area: one;}
 #two {grid-area: two;}
 #three {grid-area: three};
@@ -77,16 +83,19 @@
 #multiply {grid-area: multiply;}
 #divide {grid-area: divide;}
 #equals {grid-area: equals;
-         background-color: red;}
+         background-color: red;
+         height: 125px;}
 #decimal {grid-area: decimal;}
 #clear {grid-area: clear;
-        background-color: red;}
+        background-color: red;
+        width: 150px;}
 
 .number-button, .function-button {
-  margin: 2px;
   background-color: silver;
   border-radius: 10px;
   text-align: center;
+  height: 60px;
+  width: 70px;
 }
 
 
@@ -95,9 +104,16 @@
     position: fixed;
     top: 0;
     width: 100vw;
-    height: auto;
+    height: 120px;
+    max-height: 35%;
     background-color: rgba(250, 0, 40, .2);
     color: rgb(88,88,88);
+  }
+
+  .spacer {
+    width: 100vw;
+    top: 0;
+    height: 120px;
   }
 
   .header-nav-bar {
@@ -105,4 +121,29 @@
     flex-direction: column;
     list-style: none;
   }
+
+  #calculator-display {
+    display: grid;
+    grid-template-areas:
+      'display display display display'
+      'clear clear divide multiply'
+      'seven eight nine subract'
+      'four five six add'
+      'one two three equals'
+      'zero zero decimal equals';
+    grid-gap: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    min-width: 300px;
+    max-width: 400px;
+    height: 70%;
+    min-height: 400px;
+    border: solid darkgrey 2px;
+    background: linear-gradient(#686868, #989898);
+    border-radius: 10px;
+    box-shadow: 3px 4px lightgrey;
+    padding: 4px;
+  }
+
 }
