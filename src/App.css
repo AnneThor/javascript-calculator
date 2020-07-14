@@ -57,7 +57,7 @@
   padding: 4px;
 }
 
-#display{
+#display-in-out{
   grid-area: display;
   margin: 2px;
   background-color: grey;

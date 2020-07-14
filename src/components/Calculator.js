@@ -9,15 +9,16 @@ class Calculator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      input: '',
+      inputArray: ['0'],
+      index: 0,
+      input: true,
       output: '0',
-      lastCharacter: '',
+      lastTotal: '',
     }
     this.handleInputClick = this.handleInputClick.bind(this);
     this.handleOperatorClick = this.handleOperatorClick.bind(this);
     this.handleClearClick = this.handleClearClick.bind(this);
     this.handleEqualClick = this.handleEqualClick.bind(this);
-    this.handleDecimalClick = this.handleDecimalClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.prevEqualClick = this.prevEqualClick.bind(this);
   }
@@ -37,7 +38,7 @@ class Calculator extends React.Component {
       return;
     }
     if (key === ".") {
-      this.handleDecimalClick(event, key);
+      this.handleInputClick(event, key);
     }
     if (key === "C" || key === "c") {
       this.handleClearClick(event);
@@ -53,92 +54,136 @@ class Calculator extends React.Component {
   }
 
   handleClearClick(event) {
-    this.setState( {
-      input: '',
+    this.setState({
+      inputArray: ['0'],
+      input: true,
       output: '0',
-      lastCharacter: '',
+      decimal: false,
+      lastTotal: '',
+      lastEqual: false,
     });
   }
 
   handleInputClick(event, value) {
-    let currentInput = this.state.input;
-    let nextValue = currentInput+=value;
-    this.setState(
-      {input: nextValue,
-       lastCharacter: value,
-     }
-    );
+    let currentArray = this.state.inputArray;
+    let currentInput = currentArray.pop();
+    let lastTotal = this.state.lastTotal;
+    let regex = /[-+*/]/;
+    let regexDecimal = /\./;
+
+    if (currentInput === "=") {
+      currentArray = [];
+      currentInput = "0";
+    }
+    if ( regex.test(currentInput) ) {
+      currentArray.push(currentInput);
+      currentInput = '';
+    }
+    if ( regexDecimal.test(currentInput) && value === "." ) {
+      value='';
+    }
+    if (currentInput === '0' && value === "0") {
+      currentArray.push(currentInput);
+      return;
+    } else if ( currentInput==='0') {
+      currentInput = '';
+    }
+    let nextValue = currentInput+value;
+    currentArray.push(nextValue);
+    this.setState({
+      inputArray: currentArray,
+      lastTotal: lastTotal,
+      input: true,
+     });
   }
 
   handleOperatorClick(event, value) {
-    if (this.state.lastCharacter === "=") {
-      this.prevEqualClick(value);
-      return;
+    let currentArray = this.state.inputArray;
+    let currentInput = currentArray.pop();
+    let lastTotal = this.state.lastTotal;
+    let regex = /[-+*/]/;
+    //if operator is entered before any numerical values
+    //either add zero and then the operator or
+    //if applicable add last total and then the operator
+    if (currentInput === "=") {
+      currentArray = [lastTotal];
+      currentArray.push(value);
+      lastTotal= '';
+    } else if (currentInput === '') {
+      currentArray.push("0");
+      currentArray.push(value);
+    //if the last value is an operator, replace the value
+    } else if (regex.test(currentInput)) {
+      if (value === "-") {
+        let prevInput = currentArray.pop() ;
+        if (regex.test(prevInput)) {
+          currentArray.push(prevInput);
+          currentArray.push(currentInput);
+        } else {
+          currentArray.push(prevInput);
+          currentArray.push(currentInput);
+          currentArray.push(value);
+        }
+      } else {
+        let prevInput = currentArray.pop();
+        if (regex.test(prevInput)) {
+          currentArray.push(value)
+        } else {
+          currentArray.push(prevInput);
+          currentArray.push(value);
+        }
+      }
+    //otherwise we just need to add the number and then the operator as normal
+    } else {
+      currentArray.push(currentInput);
+      currentArray.push(value);
     }
-    let currentInput = this.state.input;
-    if ( currentInput.length === 0 ) {
-      return;
-    }
-    let lastInput = currentInput.charAt(currentInput.length-1);
-    let regEx = /[-+*/]/;
-    if (regEx.test(lastInput)) {
-      return;
-    }
-    let nextValue = currentInput+=value;
-    this.setState(
-      {input: nextValue}
-    );
+    //now the currentInput in state needs to return to blank update inputArray
+    this.setState({
+      inputArray: currentArray,
+      lastTotal: lastTotal,
+    });
   }
 
-    prevEqualClick(value) {
-      let currentTotal = this.state.output;
-      this.setState({
-        input: currentTotal + value,
-        lastCharacter: value,
-      })
-    }
-
-
-  handleDecimalClick(event, value) {
-    let currentInput = this.state.input;
-    let lastInput = currentInput.charAt(currentInput.length-1);
-    if (lastInput === value) {
-      return;
-    }
-    let nextValue = currentInput+=value;
-    this.setState(
-      {input: nextValue}
-    );
+  prevEqualClick(value) {
+    let currentTotal = this.state.output;
+    this.setState({
+      input: currentTotal + value,
+      lastCharacter: value,
+    })
   }
 
   handleEqualClick(event) {
-    if (this.state.lastCharacter === "=" ) {
-          return;
-    }
-    let currentInput = this.state.input;
-    if (currentInput.length === 1) {
+    let currentArray = this.state.inputArray;
+    let currentInput = currentArray.pop();
+
+    if (currentInput === "=") {
       return;
     }
-    let regEx = /[0-9.]/;
-    let lastInput = currentInput.charAt(currentInput.length-1);
-    if ( !regEx.test(lastInput) ) {
-      return;
-    }
-    let nextValue = evaluate(currentInput);
-    this.setState(
-      { input: (currentInput + " = " + nextValue),
-        output: nextValue,
-        lastCharacter: '=',
-      });
+    currentArray.push(currentInput);
+    currentArray.push("=");
+    let stringArray = currentArray.join('');
+    stringArray = stringArray.slice(0,-1);
+    let value = evaluate(stringArray);
+    this.setState({
+      inputArray: currentArray,
+      output: value,
+      lastTotal: value,
+      input: false,
+    })
+
+  }
+
+  displayInput(inputArray) {
+    return inputArray.join(' ');
   }
 
   render() {
     return (
       <div id="calculator-display">
 
-        <div id="display">
-          {this.state.input}
-          <p>{this.state.output}</p>
+        <div id="display-in-out">
+          <p id="display">{ this.state.input ? this.displayInput(this.state.inputArray) : this.state.output }</p>
         </div>
 
         <button className="function-button" id="clear"
@@ -173,7 +218,7 @@ class Calculator extends React.Component {
                 id="equals"
                 onClick={this.handleEqualClick}>=</button>
         <NumberButton id="zero" value="0" clicked={this.handleInputClick}/>
-        <FunctionButton id="decimal" value="." clicked={this.handleDecimalClick}/>
+        <FunctionButton id="decimal" value="." clicked={this.handleInputClick}/>
 
       </div>
     )
